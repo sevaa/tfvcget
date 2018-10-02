@@ -1,0 +1,36 @@
+{
+    "manifestVersion": 1,
+    "id": "tfvcget",
+    "version": "1.0.0",
+    "name": "TFVC Get",
+    "description": "Task for getting items from TFVC source control",
+    "publisher": "sevaalekseyev",
+    "targets": [{"id": "Microsoft.VisualStudio.Services"}],
+    "categories": ["Build and release"],
+    "tags": ["tfvc","get","Source Control"],
+    "links":
+    {
+        "support": {"uri": "https://github.com/sevaa/tfvcget/issues"}
+    },
+    "icons": {"default": "img/logo.png"},
+    "content":
+    {
+        "details": { "path" : "readme.md" }
+    },
+    "contributions":
+    [
+        {
+            "id": "tfvcget",
+            "type": "ms.vss-distributed-task.task",
+            "targets": ["ms.vss-distributed-task.tasks"],
+            "properties": { "name": "TFVCGet" }
+        }
+    ],
+    "files":
+    [
+        {"path": "TFVCGet"},
+        {"path": "img", "addressable": true}
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
