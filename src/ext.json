@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "tfvcget",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "TFVC Get",
     "description": "Task for getting items from TFVC source control",
     "publisher": "sevaalekseyev",
@@ -13,6 +13,7 @@
         "support": {"uri": "https://github.com/sevaa/tfvcget/issues"}
     },
     "icons": {"default": "img/logo.png"},
+    "galleryFlags": ["Public"],
     "content":
     {
         "details": { "path" : "readme.md" }
