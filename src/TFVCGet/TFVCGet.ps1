@@ -16,8 +16,8 @@ function GetFileFromSourceControl($Cli, $TFVCPath, $LocalPath)
     $FStm.Close()
 }
 
-#try
-#{
+try
+{
     Add-Type -Assembly "Microsoft.TeamFoundation.SourceControl.WebApi"
 
     if(-not $LocalPath)
@@ -90,9 +90,9 @@ function GetFileFromSourceControl($Cli, $TFVCPath, $LocalPath)
             }
         }
     }
-#}
-#catch
-#{
-#    Write-Error $_
-#    exit 1
-#}
+}
+catch
+{
+    Write-Error $_
+    exit 1
+}
