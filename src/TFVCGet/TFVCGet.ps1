@@ -6,7 +6,7 @@ param
 
 function GetFileFromSourceControl($Cli, $TFVCPath, $LocalPath)
 {
-    $Stm = $Cli.GetItemContentAsync($TFVCPath, $null, $null, $null, $null, $null, $null, [System.Threading.CancellationToken]::None).GetAwaiter().GetResult()
+    $Stm = $Cli.GetItemContentAsync($null, $TFVCPath, $null, $null, $null, $null, $null, $null, [System.Threading.CancellationToken]::None).GetAwaiter().GetResult()
 
     $Mode = [System.IO.FileMode]::Create
     $Access = [System.IO.FileAccess]::Write
@@ -16,8 +16,8 @@ function GetFileFromSourceControl($Cli, $TFVCPath, $LocalPath)
     $FStm.Close()
 }
 
-try
-{
+#try
+#{
     Add-Type -Assembly "Microsoft.TeamFoundation.SourceControl.WebApi"
 
     if(-not $LocalPath)
@@ -33,7 +33,7 @@ try
     $Cli = $VSS.GetClient([Microsoft.TeamFoundation.SourceControl.WebApi.TfvcHttpClient])
     $Full = [Microsoft.TeamFoundation.SourceControl.WebApi.VersionControlRecursionType]::Full
     $None = [System.Threading.CancellationToken]::None
-    $Items = $Cli.GetItemsAsync($TFVCPath, $Full, $false, $null, $null, $None).GetAwaiter().GetResult()
+    $Items = $Cli.GetItemsAsync($null, $TFVCPath, $Full, $false, $null, $null, $None).GetAwaiter().GetResult()
     if($Items.Count -eq 0) # Not found
     {
         Write-Error "$TFVCPath was not found"
@@ -90,9 +90,9 @@ try
             }
         }
     }
-}
-catch
-{
-    Write-Error $_
-    exit 1
-}
+#}
+#catch
+#{
+#    Write-Error $_
+#    exit 1
+#}
