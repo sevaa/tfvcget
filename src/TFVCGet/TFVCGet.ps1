@@ -41,7 +41,7 @@ try
     }
     elseif($Items.Count -eq 1 -and -not $Items[0].IsFolder) #It's a file
     {
-        if(Test-Path $LocalPath -PathType Container) #Local path exists, and it's a folder.
+        if([System.IO.Directory]::Exists($LocalPath)) #Local path exists, and it's a folder.
         {
             $FileName = $Items[0].Path.Split("/")[-1]
             $LocalPath = [System.IO.Path]::Combine($LocalPath, $FileName)
@@ -50,7 +50,7 @@ try
     }
     else #It's a folder - recurse...
     {
-        if(Test-Path $LocalPath -PathType Leaf) # The target exists and it's a file
+        if([System.IO.File]::Exists($LocalPath)) # The target exists and it's a file
         {
             Write-Error "$LocalPath is a file, while $TFVCPath is a folder."
             exit 1
@@ -78,7 +78,7 @@ try
 
             if($Item.IsFolder)
             {
-                if(-not (Test-Path $LocalItemPath -PathType Container))
+                if(-not [System.IO.Directory]::Exists($LocalItemPath))
                 {
                     "Creating $LocalItemPath"
                     New-Item -Path $LocalItemPath -ItemType Directory
