@@ -16,6 +16,51 @@ function GetFileFromSourceControl($Cli, $TFVCPath, $LocalPath)
     $FStm.Close()
 }
 
+function EnsureFolderExistence($Path)
+{
+    if(-not [System.IO.Directory]::Exists($Path))
+    {
+        "Creating $Path"
+        New-Item -Path $Path -ItemType Directory
+    }
+}
+
+function MakeLocalPath($TFVCPath, $LocalPath, $BaseLen)
+{
+    $RelPath = $TFVCPath.Substring($BaseLen) # Relative TFS path, no initial /
+    $RelPath = $RelPath.Replace("/", "\")
+    [System.IO.Path]::Combine($LocalPath, $RelPath)    
+}
+
+# The zeroth element is the folder itself, the rest is files and subfolders
+# Assuming the folder already exists
+# LocalPath and BaseLen are task parameters
+function GetFolderFromSourceControl($Items, $FolderQueue, $LocalPath, $BaseLen)
+{
+    foreach($Item in $Items)
+    {
+        $ItemPath = $Item.Path
+        if($ItemPath -ne $Items[0].Path)
+        {
+            $LocalItemPath = MakeLocalPath $ItemPath $LocalPath $BaseLen
+
+            if($Item.IsFolder) # The root folder already exists, subfolders of root will be queued
+            {
+                $FolderQueue.Enqueue($Item)
+            }
+            else # This item is a file
+            {
+                $ItemPath
+                GetFileFromSourceControl $Cli $ItemPath $LocalItemPath
+            }
+        }
+        else
+        {
+            $ItemPath
+        }
+    }
+}
+
 try
 {
     Add-Type -Assembly "Microsoft.TeamFoundation.SourceControl.WebApi"
@@ -31,9 +76,9 @@ try
 
     $VSS = Get-VssConnection -TaskContext $distributedTaskContext
     $Cli = $VSS.GetClient([Microsoft.TeamFoundation.SourceControl.WebApi.TfvcHttpClient])
-    $Full = [Microsoft.TeamFoundation.SourceControl.WebApi.VersionControlRecursionType]::Full
+    $OneLevel = [Microsoft.TeamFoundation.SourceControl.WebApi.VersionControlRecursionType]::OneLevel
     $None = [System.Threading.CancellationToken]::None
-    $Items = $Cli.GetItemsAsync($null, $TFVCPath, $Full, $false, $null, $null, $None).GetAwaiter().GetResult()
+    $Items = $Cli.GetItemsAsync($null, $TFVCPath, $OneLevel, $false, $null, $null, $None).GetAwaiter().GetResult()
     if($Items.Count -eq 0) # Not found
     {
         Write-Error "$TFVCPath was not found"
@@ -55,39 +100,25 @@ try
             Write-Error "$LocalPath is a file, while $TFVCPath is a folder."
             exit 1
         }
+
+        # For easier production of relative paths
         if(-not $TFVCPath.EndsWith("/"))
         {
             $TFVCPath += "/"
         }
 
         $BaseLen = $TFVCPath.Length
-        foreach($Item in $Items)
-        {
-            $ItemPath = $Item.Path
-            $ItemPath
-            if($ItemPath.Length -gt $BaseLen) #Slightly different logic for the root
-            {
-                $RelPath = $ItemPath.Substring($BaseLen) #Relative TFS path, no initial /
-                $RelPath = $RelPath.Replace("/", "\")
-            }
-            else
-            {
-                $RelPath = "."
-            }
-            $LocalItemPath = [System.IO.Path]::Combine($LocalPath, $RelPath)
+        EnsureFolderExistence $LocalPath
+        $FolderQueue = New-Object "System.Collections.Generic.Queue[Microsoft.TeamFoundation.SourceControl.WebApi.TfvcItem]"
+        GetFolderFromSourceControl $Items $FolderQueue $LocalPath $BaseLen
 
-            if($Item.IsFolder)
-            {
-                if(-not [System.IO.Directory]::Exists($LocalItemPath))
-                {
-                    "Creating $LocalItemPath"
-                    New-Item -Path $LocalItemPath -ItemType Directory
-                }
-            }
-            else # This item is a file
-            {
-                GetFileFromSourceControl $Cli $ItemPath $LocalItemPath
-            }
+        while($FolderQueue.Count -gt 0)
+        {
+            $Folder = $FolderQueue.Dequeue()
+            $FolderLocalPath = MakeLocalPath $Folder.Path $LocalPath $BaseLen
+            EnsureFolderExistence $FolderLocalPath
+            $Items = $Cli.GetItemsAsync($null, $Folder.Path, $OneLevel, $false, $null, $null, $None).GetAwaiter().GetResult()
+            GetFolderFromSourceControl $Items $FolderQueue $LocalPath $BaseLen
         }
     }
 }
