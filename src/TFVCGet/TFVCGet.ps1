@@ -27,6 +27,7 @@ function EnsureFolderExistence($Path)
 
 function MakeLocalPath($TFVCPath, $LocalPath, $BaseLen)
 {
+    Write-Verbose "Need local path of $TFVCPath base len $BaseLen"
     $RelPath = $TFVCPath.Substring($BaseLen) # Relative TFS path, no initial /
     $RelPath = $RelPath.Replace("/", "\")
     [System.IO.Path]::Combine($LocalPath, $RelPath)    
@@ -46,6 +47,8 @@ function GetFolderFromSourceControl($Items, $FolderQueue, $LocalPath, $BaseLen)
 
             if($Item.IsFolder) # The root folder already exists, subfolders of root will be queued
             {
+                $ItemPath = $Item.Path.ToString()
+                Write-Verbose "Enqueueing $ItemPath"
                 $FolderQueue.Enqueue($Item)
             }
             else # This item is a file
@@ -108,6 +111,7 @@ try
         }
 
         $BaseLen = $TFVCPath.Length
+        Write-Verbose "Adjusted TFSVCPath is $TFVCPath len $BaseLen"
         EnsureFolderExistence $LocalPath
         $FolderQueue = New-Object "System.Collections.Generic.Queue[Microsoft.TeamFoundation.SourceControl.WebApi.TfvcItem]"
         GetFolderFromSourceControl $Items $FolderQueue $LocalPath $BaseLen
@@ -115,6 +119,8 @@ try
         while($FolderQueue.Count -gt 0)
         {
             $Folder = $FolderQueue.Dequeue()
+            $FolderPath = $Folder.Path.ToString()
+            Write-Verbose "Dequeued $FolderPath"
             $FolderLocalPath = MakeLocalPath $Folder.Path $LocalPath $BaseLen
             EnsureFolderExistence $FolderLocalPath
             $Items = $Cli.GetItemsAsync($null, $Folder.Path, $OneLevel, $false, $null, $null, $None).GetAwaiter().GetResult()
