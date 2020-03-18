@@ -38,10 +38,13 @@ function MakeLocalPath($TFVCPath, $LocalPath, $BaseLen)
 # LocalPath and BaseLen are task parameters
 function GetFolderFromSourceControl($Items, $FolderQueue, $LocalPath, $BaseLen)
 {
+    #Fix for #7: self is not always the 0th item
+    $BaseTFVCPath = ($Items | %{$_.Path.ToString()} | Measure-Object -Minimum).Minimum
+    $BaseTFVCPath
     foreach($Item in $Items)
     {
         $ItemPath = $Item.Path
-        if($ItemPath -ne $Items[0].Path)
+        if($ItemPath -ne $BaseTFVCPath)
         {
             $LocalItemPath = MakeLocalPath $ItemPath $LocalPath $BaseLen
 
@@ -56,10 +59,6 @@ function GetFolderFromSourceControl($Items, $FolderQueue, $LocalPath, $BaseLen)
                 $ItemPath
                 GetFileFromSourceControl $Cli $ItemPath $LocalItemPath
             }
-        }
-        else
-        {
-            $ItemPath
         }
     }
 }

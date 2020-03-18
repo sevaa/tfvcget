@@ -9,8 +9,8 @@
     "version":
     {
         "Major": 1,
-        "Minor": 3,
-        "Patch":8
+        "Minor": 4,
+        "Patch":0
     },
     "demands": [],
     "instanceNameFormat": "Get $(TFVCPath) into $(LocalPath)",
