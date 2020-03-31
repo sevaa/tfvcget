@@ -8,8 +8,8 @@
     "author": "Seva Alekseyev",
     "version":
     {
-        "Major": 1,
-        "Minor": 4,
+        "Major": 2,
+        "Minor": 0,
         "Patch":0
     },
     "demands": [],
@@ -19,6 +19,11 @@
         "PowerShell":
         {
             "target": "$(currentDirectory)\\TFVCGet.ps1",
+            "argumentFormat": ""
+        },
+        "Node10":
+        {
+            "target": "$(currentDirectory)\\TFVCGet.js",
             "argumentFormat": ""
         }
     },
