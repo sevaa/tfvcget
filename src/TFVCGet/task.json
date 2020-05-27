@@ -10,7 +10,7 @@
     {
         "Major": 2,
         "Minor": 0,
-        "Patch":0
+        "Patch":1
     },
     "demands": [],
     "instanceNameFormat": "Get $(TFVCPath) into $(LocalPath)",
@@ -23,7 +23,7 @@
         },
         "Node10":
         {
-            "target": "$(currentDirectory)\\TFVCGet.js",
+            "target": "$(currentDirectory)/TFVCGet.js",
             "argumentFormat": ""
         }
     },
