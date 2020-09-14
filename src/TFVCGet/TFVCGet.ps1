@@ -88,6 +88,11 @@ try
     }
     elseif($Items.Count -eq 1 -and -not $Items[0].IsFolder) #It's a file
     {
+        if($LocalPath.EndsWith("\") -and -not [System.IO.File]::Exists($LocalPath) -and -not [System.IO.Directory]::Exists($LocalPath))
+        {
+            EnsureFolderExistence $LocalPath
+        }
+
         if([System.IO.Directory]::Exists($LocalPath)) #Local path exists, and it's a folder.
         {
             $FileName = $Items[0].Path.Split("/")[-1]

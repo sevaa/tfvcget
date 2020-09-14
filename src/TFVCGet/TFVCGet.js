@@ -92,6 +92,9 @@ async function main()
         }
         else if(Items.length == 1 && !Items[0].isFolder) //It's a file
         {
+            if(!tl.exist(LocalPath) && LocalPath.endsWith(path.sep))
+                fs.mkdirSync(LocalPath, {recursive:true});
+
             if(tl.exist(LocalPath) && fs.statSync(LocalPath, {bigint:false}).isDirectory())
             {
                 var FileName = Items[0].path.split("/").pop();
