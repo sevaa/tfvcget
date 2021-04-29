@@ -53,23 +53,27 @@ async function main()
 {
     try
     {
-        var conn;
-        var TFVCPath, LocalPath;
+        let conn;
+        let TFVCPath, LocalPath;
+        let timeout = false;
         
         if(tl.getVariable("Agent.Version")) //Running from the agent
         {
             //Use the context connection - effectively the "Project Collection Build Service"
-            var url = tl.getEndpointUrl("SYSTEMVSSCONNECTION", false);
-            var token = tl.getEndpointAuthorizationParameter("SYSTEMVSSCONNECTION", "AccessToken", false);
+            const url = tl.getEndpointUrl("SYSTEMVSSCONNECTION", false);
+            const token = tl.getEndpointAuthorizationParameter("SYSTEMVSSCONNECTION", "AccessToken", false);
             conn = vso.WebApi.createWithBearerToken(url, token, null);
 
             TFVCPath = tl.getInput("TFVCPath");
-            LocalPath = tl.getInput("LocalPath"); 
+            LocalPath = tl.getInput("LocalPath");
+            timeout = parseInt(tl.getInput("Timeout"));
+            if(isNaN(timeout))
+                timeout = false;
         }
         else //Interactive run
         {
             //TFS context passed through the environment variables - TFSURL and PAT
-            conn = new vso.WebApi(process.env.TFSURL, vso.getPersonalAccessTokenHandler(process.env.PAT));
+            conn = new vso.WebApi(process.env.TFSURL, vso.getPersonalAccessTokenHandler(process.env.PAT), timeout ? {socketTimeout: timeout*1000} : undefined);
 
             //Parameters passed through the node.js command line
             TFVCPath = process.argv[2];

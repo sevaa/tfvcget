@@ -1,16 +1,22 @@
 {
     "manifestVersion": 1,
     "id": "tfvcget",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "name": "TFVC Get",
     "description": "Task for getting items from TFVC source control",
     "publisher": "sevaalekseyev",
     "targets": [{"id": "Microsoft.VisualStudio.Services"}],
-    "categories": ["Build and release"],
+    "categories": ["Azure Pipelines"],
     "tags": ["tfvc","get","Source Control"],
+    "repository":
+    {
+        "type": "git",
+        "uri": "https://github.com/sevaa/tfvcget/"
+    },
     "links":
     {
-        "support": {"uri": "https://github.com/sevaa/tfvcget/issues"}
+        "support": {"uri": "https://github.com/sevaa/tfvcget/issues"},
+        "repository": {"uri": "https://github.com/sevaa/tfvcget/"}
     },
     "icons": {"default": "img/logo.png"},
     "galleryFlags": ["Public"],
