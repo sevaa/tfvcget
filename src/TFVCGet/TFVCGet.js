@@ -1,5 +1,5 @@
-var tl = require("vsts-task-lib");
-var vso = require("vso-node-api");
+var tl = require("azure-pipelines-task-lib");
+var vso = require("azure-devops-node-api");
 var fs = require("fs");
 var path = require("path");
 var OneLevel = 1;
