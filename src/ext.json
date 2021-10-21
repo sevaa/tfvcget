@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "tfvcget",
-    "version": "2.2.3",
+    "version": "2.2.4",
     "name": "TFVC Get",
     "description": "Task for getting items from TFVC source control",
     "publisher": "sevaalekseyev",
@@ -22,7 +22,9 @@
     "galleryFlags": ["Public"],
     "content":
     {
-        "details": { "path" : "readme.md" }
+        "details": { "path" : "readme.md" },
+        "license": { "path" : "license.md" },
+        "privacypolicy": { "path" : "privacy.md" }
     },
     "contributions":
     [
