@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "tfvcget",
-    "version": "2.2.7",
+    "version": "2.2.8",
     "name": "TFVC Get",
     "description": "Task for getting items from TFVC source control",
     "publisher": "sevaalekseyev",
