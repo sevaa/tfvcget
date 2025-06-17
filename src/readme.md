@@ -17,3 +17,6 @@ If the source is a file, the target doesn't exist, and the target name ends with
 The task connects to AzDevOps with the distributed task context, that corresponds to an artificial entity
 called "Project Collection Build Service". It's not an Active Directory user, but AzDevOps Web UI recognizes it
 as a valid username, and lets one add it to groups and assign permissions to it.
+
+# See also
+There is also [a counterpart for Git repositories](https://marketplace.visualstudio.com/items?itemName=sevaalekseyev.gitget).
