@@ -2,3 +2,4 @@ Temp
 temp
 *.vsix
 .vscode
+**/node_modules
